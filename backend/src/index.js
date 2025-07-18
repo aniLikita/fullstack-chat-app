@@ -12,27 +12,18 @@ import { app , server } from './lib/socket.js';
 
 dotenv.config();
 
+const BASE_URL= import.meta.env.MODE === "development" ? "http://localhost:5001" : "/";
 
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
 
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://your-frontend-domain.onrender.com' // replace with actual deployed frontend URL
-];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: BASE_URL,
   credentials: true,
-}));
+}))
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
